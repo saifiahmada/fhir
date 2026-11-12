@@ -7,7 +7,7 @@ if(!$service){http_response_code(404);exit('ServiceRequest tidak ditemukan');}
 $service=json_decode($service,true);
 $task=['resourceType'=>'Task','id'=>'ack-'.$id,'status'=>'accepted','intent'=>'order','code'=>['text'=>'Konfirmasi penerimaan rujukan'],'focus'=>['reference'=>'ServiceRequest/'.$id],'authoredOn'=>date('c'),'description'=>'Rumah Sakit mengonfirmasi bahwa rujukan telah diterima.'];
 $bundle=['resourceType'=>'Bundle','type'=>'transaction','timestamp'=>date('c'),'identifier'=>['system'=>'https://example.org/acknowledgement','value'=>'ACK-'.$id], 'entry'=>[['fullUrl'=>'urn:uuid:'.bin2hex(random_bytes(16)),'resource'=>$task,'request'=>['method'=>'PUT','url'=>'Task/'.$task['id']]]]];
-$clinicUrl='http://localhost/puskesmas/api/fhir.php';
+$clinicUrl='http://localhost/fhir/puskesmas/api/fhir.php';
 $ch=curl_init($clinicUrl);curl_setopt_array($ch,[CURLOPT_POST=>true,CURLOPT_RETURNTRANSFER=>true,CURLOPT_HTTPHEADER=>['Content-Type: application/fhir+json','Accept: application/fhir+json','X-API-Key: '.FHIR_API_KEY],CURLOPT_POSTFIELDS=>json_encode($bundle,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),CURLOPT_TIMEOUT=>20]);
 $response=curl_exec($ch);$error=curl_error($ch);$status=(int)curl_getinfo($ch,CURLINFO_HTTP_CODE);curl_close($ch);
 if($response===false)$response=json_encode(['error'=>$error]);
